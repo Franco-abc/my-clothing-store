@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Checkout - Second Life Clothing</h1>
+    </header>
+
+    <section id="payment">
+        <h2>Total: $<span id="amount"></span></h2>
+        <button id="payButton">Pay with Stripe</button>
+    </section>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        // Stripe Payment Integration
+        var stripe = Stripe('your-publishable-key-here');
+        var amount = new URLSearchParams(window.location.search).get('amount');
+        document.getElementById('amount').textContent = amount;
+
+        document.getElementById('payButton').addEventListener('click', function () {
+            stripe.redirectToCheckout({
+                lineItems: [{ price: 'price_1Hh3FkGxG2IYSzW2yctJ9Mn7', quantity: 1 }],
+                mode: 'payment',
+                successUrl: window.location.origin + '/success.html',
+                cancelUrl: window.location.origin + '/cancel.html',
+            }).then(function (result) {
+                if (result.error) {
+                    alert(result.error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
